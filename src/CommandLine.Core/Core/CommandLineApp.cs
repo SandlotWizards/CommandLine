@@ -87,12 +87,14 @@ public static class CommandLineApp
             return;
         }
 
-        if (!registry.TryGet(context.Noun, context.Verb, out var command))
+        var descriptor = registry.Resolve(context.Noun, context.Verb);
+        if (descriptor is not IRoutableCommandDescriptor routable)
         {
             ActionLog.Global.Warning($"Unknown command '{context.Noun} {context.Verb}'.");
             return;
         }
 
+        var command = routable.Resolve(serviceProvider);
         if (command is null) return;
 
         BindCommandPropertiesFromArguments(command, context);
@@ -109,7 +111,6 @@ public static class CommandLineApp
         {
             if (!prop.CanWrite) continue;
 
-            // Match CLI-style "project-type" to C# "ProjectType"
             var matchingKey = context.Arguments.Keys
                 .FirstOrDefault(k => Normalize(k) == Normalize(prop.Name));
 
@@ -131,6 +132,4 @@ public static class CommandLineApp
         static string Normalize(string name) =>
             name.Replace("-", "", StringComparison.OrdinalIgnoreCase).ToLowerInvariant();
     }
-
-
 }

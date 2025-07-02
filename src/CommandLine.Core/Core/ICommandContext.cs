@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 
+namespace SandlotWizards.CommandLineParser.Core;
+
 public interface ICommandContext
 {
     Dictionary<string, string> Arguments { get; set; }

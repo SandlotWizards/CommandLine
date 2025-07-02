@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CommandLine.Harness": {
+      "commandName": "Project",
+      "commandLineArgs": "package remove --name CommandLine.NugetCommands"
+    }
+  }
+}

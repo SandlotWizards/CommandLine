@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandLine.Core", "src\Com
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandLine.Harness", "src\CommandLine.Harness\CommandLine.Harness.csproj", "{B9F7E083-C424-95D2-0291-DF520085269D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandLine.NugetCommands", "src\CommandLine.NugetCommands\CommandLine.NugetCommands.csproj", "{AA27F163-776F-428A-8A76-56D5ECC7BFC9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,8 +23,15 @@ Global
 		{B9F7E083-C424-95D2-0291-DF520085269D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9F7E083-C424-95D2-0291-DF520085269D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9F7E083-C424-95D2-0291-DF520085269D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA27F163-776F-428A-8A76-56D5ECC7BFC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA27F163-776F-428A-8A76-56D5ECC7BFC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA27F163-776F-428A-8A76-56D5ECC7BFC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA27F163-776F-428A-8A76-56D5ECC7BFC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0F6ABCB7-DD7E-42C9-8F76-1682A8C21B0C}
 	EndGlobalSection
 EndGlobal

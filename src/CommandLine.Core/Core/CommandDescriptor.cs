@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class CommandDescriptor
+public class CommandDescriptor : ICommandDescriptor
 {
     public required string Name { get; init; }
     public required string Description { get; init; }

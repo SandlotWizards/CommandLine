@@ -2,6 +2,8 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 
+namespace SandlotWizards.CommandLineParser.Core;
+
 public class CommandContext : ICommandContext
 {
     public string Noun { get; set; } = string.Empty;
