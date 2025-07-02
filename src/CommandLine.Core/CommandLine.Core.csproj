@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Version>2.0.0</Version>
+    <Authors>Sandlot Wizards</Authors>
+    <Company>Sandlot Wizards</Company>
+    <RootNamespace>SandlotWizards.CommandLineParser</RootNamespace>
+    <PackageId>SandlotWizards.CommandLineParser</PackageId>
+    <Description>
+      Modular, DI-ready command-line parser with built-in command registration, execution pipeline, help rendering, localization, and AI-aware context handling.
+    </Description>
+    <PackageTags>
+      cli;command-line;parser;dotnet;ai;rag;help;localization;hooks;execution-pipeline;sandlot;extensible;modular
+    </PackageTags>
+    <RepositoryUrl>git@github.com:SandlotWizards/CommandLine.git</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="SandlotWizards.ActionLogger" Version="2.0.1" />
+    <PackageReference Include="SandlotWizards.SharedKernel" Version="2.0.0" />
+  </ItemGroup>
+
+</Project>

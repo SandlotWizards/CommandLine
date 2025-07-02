@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandLine.Core", "src\CommandLine.Core\CommandLine.Core.csproj", "{B9254B9B-9C62-EF11-F747-108685B83D33}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandLine.Harness", "CommandLine.Harness\CommandLine.Harness.csproj", "{BF769FC5-A945-4D50-9945-733FB46A7FBF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B9254B9B-9C62-EF11-F747-108685B83D33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9254B9B-9C62-EF11-F747-108685B83D33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9254B9B-9C62-EF11-F747-108685B83D33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9254B9B-9C62-EF11-F747-108685B83D33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF769FC5-A945-4D50-9945-733FB46A7FBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF769FC5-A945-4D50-9945-733FB46A7FBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF769FC5-A945-4D50-9945-733FB46A7FBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF769FC5-A945-4D50-9945-733FB46A7FBF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
