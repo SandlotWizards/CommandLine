@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CommandLine.CLI": {
+      "commandName": "Project",
+      "commandLineArgs": "hello world --name Alice --output json"
+    }
+  }
+}

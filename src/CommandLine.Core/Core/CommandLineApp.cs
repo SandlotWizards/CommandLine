@@ -56,7 +56,13 @@ public static class CommandLineApp
         try
         {
             var descriptor = registry.Resolve(context.Noun, context.Verb);
-            if (descriptor is not ICommand command)
+            ICommand? command = descriptor switch
+            {
+                IRoutableCommandDescriptor routable => routable.Resolve((IServiceProvider)context.Metadata["ServiceProvider"]),
+                _ => null
+            };
+
+            if (command is null)
             {
                 throw new InvalidOperationException($"No command registered for {context.Noun} {context.Verb}.");
             }
@@ -102,4 +108,5 @@ public static class CommandLineApp
             Environment.Exit(2);
         }
     }
+
 }
