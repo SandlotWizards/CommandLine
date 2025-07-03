@@ -4,5 +4,5 @@ namespace SandlotWizards.CommandLineParser.Core;
 
 public interface ICommand
 {
-    Task ExecuteAsync(CommandContext context);
+    Task<CommandResult?> ExecuteAsync(CommandContext context);
 }

@@ -4,10 +4,16 @@ namespace CommandLine.Harness.Commands
 {
     public class HelloCommand : ICommand
     {
-        public async Task ExecuteAsync(CommandContext context)
+        public async Task<CommandResult?> ExecuteAsync(CommandContext context)
         {
-            Console.WriteLine("Copilot CLI is running and command dispatch works!");
-            await Task.CompletedTask;
+            var message = "Copilot CLI is running and command dispatch works!";
+            Console.WriteLine(message);
+
+            return await Task.FromResult(new CommandResult
+            {
+                Status = "success",
+                Messages = new[] { message }
+            });
         }
     }
 }

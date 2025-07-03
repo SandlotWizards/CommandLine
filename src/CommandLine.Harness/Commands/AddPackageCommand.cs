@@ -8,13 +8,17 @@ namespace CommandLine.Harness.Commands;
 
 public class AddPackageCommand : ICommand
 {
-    public async Task ExecuteAsync(CommandContext context)
+    public async Task<CommandResult?> ExecuteAsync(CommandContext context)
     {
         var packageId = context.Arguments.GetValueOrDefault("name");
         if (string.IsNullOrWhiteSpace(packageId))
         {
             Console.WriteLine("--name argument is required.");
-            return;
+            return new CommandResult
+            {
+                Status = "error",
+                Messages = new[] { "--name argument is required." }
+            };
         }
 
         var versionArg = context.Arguments.GetValueOrDefault("version");
@@ -27,7 +31,7 @@ public class AddPackageCommand : ICommand
         var sourceRepository = sourceRepositoryProvider.CreateRepository(new PackageSource("https://api.nuget.org/v3/index.json"));
 
         var resource = await sourceRepository.GetResourceAsync<FindPackageByIdResource>();
-        using var cache = new SourceCacheContext();
+        using var cache = new SourceCacheContext { NoCache = true, DirectDownload = true };
         var logger = NuGet.Common.NullLogger.Instance;
 
         var versions = await resource.GetAllVersionsAsync(packageId, cache, logger, CancellationToken.None);
@@ -47,7 +51,11 @@ public class AddPackageCommand : ICommand
             if (!success)
             {
                 Console.WriteLine("Failed to download package.");
-                return;
+                return new CommandResult
+                {
+                    Status = "error",
+                    Messages = new[] { "Failed to download package." }
+                };
             }
         }
 
@@ -58,5 +66,11 @@ public class AddPackageCommand : ICommand
         ZipFile.ExtractToDirectory(nupkgPath, extractPath);
 
         Console.WriteLine($"Package '{packageId}' installed to {extractPath}");
+        return new CommandResult
+        {
+            Status = "success",
+            Messages = new[] { $"Package '{packageId}' installed to {extractPath}" },
+            Data = new { package = packageId, path = extractPath }
+        };
     }
 }

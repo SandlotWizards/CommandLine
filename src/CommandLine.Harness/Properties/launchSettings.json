@@ -2,7 +2,7 @@
   "profiles": {
     "CommandLine.Harness": {
       "commandName": "Project",
-      "commandLineArgs": "package remove --name CommandLine.NugetCommands"
+      "commandLineArgs": "connection-profile add"
     }
   }
 }

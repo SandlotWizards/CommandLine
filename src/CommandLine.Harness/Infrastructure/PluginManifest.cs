@@ -1,4 +1,4 @@
 ﻿namespace CommandLine.Harness.Infrastructure
 {
-    public record PluginManifest(string Name, string EntryAssembly, List<PluginCommand> Commands);
+    public record PluginManifest(string name, string entryAssembly, List<PluginCommand> commands);
 }

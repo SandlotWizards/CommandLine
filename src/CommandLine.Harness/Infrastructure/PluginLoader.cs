@@ -3,6 +3,7 @@ using System.Runtime.Loader;
 using Microsoft.Extensions.DependencyInjection;
 using SandlotWizards.CommandLineParser.Core;
 using System.Text.Json;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CommandLine.Harness.Infrastructure;
 
@@ -44,19 +45,22 @@ public static class PluginLoader
         {
             var manifestJson = File.ReadAllText(manifestPath);
             var manifest = JsonSerializer.Deserialize<PluginManifest>(manifestJson);
-            if (manifest is null || string.IsNullOrEmpty(manifest.EntryAssembly)) continue;
+            if (manifest is null || string.IsNullOrEmpty(manifest.entryAssembly)) continue;
 
             var pluginDir = Path.GetDirectoryName(manifestPath)!;
-            var assemblyPath = Path.Combine(pluginDir, manifest.EntryAssembly);
-            var context = new AssemblyLoadContext(manifest.Name, isCollectible: true);
+            var manifests = Directory.EnumerateFiles(pluginDir, manifest.entryAssembly, SearchOption.AllDirectories);
+            if (!manifests.Any()) continue;
+            var assemblyPath = manifests.First();
+            var context = new AssemblyLoadContext(manifest.name, isCollectible: true);
             var assembly = context.LoadFromAssemblyPath(assemblyPath);
 
-            foreach (var cmd in manifest.Commands)
+            foreach (var cmd in manifest.commands)
             {
-                var type = assembly.GetType(cmd.Type);
+                var xyz = assembly.GetExportedTypes();
+                var type = assembly.GetType(cmd.type);
                 if (type is null || !typeof(ICommand).IsAssignableFrom(type)) continue;
 
-                yield return (type, $"{cmd.Noun} {cmd.Verb}");
+                yield return (type, $"{cmd.noun} {cmd.verb}");
             }
         }
     }

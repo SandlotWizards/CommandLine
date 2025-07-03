@@ -3,7 +3,7 @@ using SandlotWizards.ActionLogger.Services;
 using SandlotWizards.CommandLineParser.Help;
 using SandlotWizards.CommandLineParser.Parsing;
 using System;
-using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SandlotWizards.CommandLineParser.Core;
@@ -21,7 +21,6 @@ public static class CommandLineApp
         }
 
         var registry = new CommandRegistry();
-        // Register built-in commands using noun-verb model
         registry.Register("core", "greet", new BuiltIn.GreetCommand());
         registry.Register("core", "version", new BuiltIn.VersionCommand());
 
@@ -30,16 +29,18 @@ public static class CommandLineApp
         var context = parser.Parse(args);
         context.Metadata["ServiceProvider"] = serviceProvider;
 
+        var outputAsJson = context.Arguments.TryGetValue("output", out var format) && format?.ToLowerInvariant() == "json";
+        context.Metadata["OutputFormat"] = outputAsJson ? "json" : "text";
+
         ActionLog.Global.PrintHeader(ConsoleColor.Cyan);
 
-        // Top-level help-like flags with no command
         if (string.IsNullOrWhiteSpace(context.CommandName))
         {
             if (context.Arguments.ContainsKey("version"))
             {
                 ActionLog.Global.Message("lore CLI version 1.0.0", ConsoleColor.Gray);
                 ActionLog.Global.PrintTrailer(ConsoleColor.Cyan);
-                return;
+                Environment.Exit(0);
             }
 
             if (context.Arguments.ContainsKey("help") || context.Arguments.ContainsKey("list"))
@@ -48,88 +49,57 @@ public static class CommandLineApp
                 Console.WriteLine("- core greet: Prints a friendly greeting");
                 Console.WriteLine("- core version: Shows the version");
                 Console.WriteLine("- core autocomplete: Generates autocomplete script");
-                ActionLog.Global.PrintTrailer(ConsoleColor.Cyan);
-                return;
+                Environment.Exit(0);
             }
-
-            if (context.Arguments.ContainsKey("why"))
-            {
-                ActionLog.Global.Message("lore is your AI copilot for .NET CLI development.");
-                ActionLog.Global.Message("It helps you generate, extend, and execute intelligent commands.");
-                ActionLog.Global.PrintTrailer(ConsoleColor.Cyan);
-                return;
-            }
-
-            if (context.Arguments.ContainsKey("examples"))
-            {
-                ActionLog.Global.Message("Examples:");
-                ActionLog.Global.Message("  lore greet --name Alice");
-                ActionLog.Global.Message("  lore version");
-                ActionLog.Global.Message("  lore autocomplete --shell bash");
-                ActionLog.Global.PrintTrailer(ConsoleColor.Cyan);
-                return;
-            }
-
-            if (context.Arguments.ContainsKey("describe"))
-            {
-                ActionLog.Global.Message("lore CLI – powered by Sandlot.CommandLineParser");
-                ActionLog.Global.Message("Version: 1.0.0");
-                ActionLog.Global.Message("Docs: https://github.com/SandlotWizards");
-                ActionLog.Global.PrintTrailer(ConsoleColor.Cyan);
-                return;
-            }
-
-            // Default splash: no args
-            ActionLog.Global.Message("Welcome to your CLI.", ConsoleColor.Gray);
-            ActionLog.Global.Message("");
-            ActionLog.Global.Message("Type `lore --help` to begin.");
-            ActionLog.Global.PrintTrailer(ConsoleColor.Cyan);
-            return;
         }
 
-        var descriptor = registry.Resolve(context.Noun, context.Verb);
-        if (descriptor is not IRoutableCommandDescriptor routable)
+        try
         {
-            ActionLog.Global.Warning($"Unknown command '{context.Noun} {context.Verb}'.");
-            return;
-        }
-
-        var command = routable.Resolve(serviceProvider);
-        if (command is null) return;
-
-        BindCommandPropertiesFromArguments(command, context);
-        await command.ExecuteAsync(context);
-
-        ActionLog.Global.PrintTrailer(ConsoleColor.Cyan);
-    }
-
-    private static void BindCommandPropertiesFromArguments(ICommand command, CommandContext context)
-    {
-        var props = command.GetType().GetProperties();
-
-        foreach (var prop in props)
-        {
-            if (!prop.CanWrite) continue;
-
-            var matchingKey = context.Arguments.Keys
-                .FirstOrDefault(k => Normalize(k) == Normalize(prop.Name));
-
-            if (matchingKey != null)
+            var descriptor = registry.Resolve(context.Noun, context.Verb);
+            if (descriptor is not ICommand command)
             {
-                try
-                {
-                    var rawValue = context.Arguments[matchingKey];
-                    var converted = Convert.ChangeType(rawValue, prop.PropertyType);
-                    prop.SetValue(command, converted);
-                }
-                catch (Exception ex)
-                {
-                    throw new InvalidOperationException($"Failed to bind '{matchingKey}' to '{prop.Name}': {ex.Message}");
-                }
+                throw new InvalidOperationException($"No command registered for {context.Noun} {context.Verb}.");
             }
-        }
 
-        static string Normalize(string name) =>
-            name.Replace("-", "", StringComparison.OrdinalIgnoreCase).ToLowerInvariant();
+            if (context.Arguments.ContainsKey("help"))
+            {
+                var helpText = await HelpProvider.GetHelpAsync(context.CommandName);
+                Console.WriteLine(helpText);
+                Environment.Exit(0);
+            }
+
+            var result = await command.ExecuteAsync(context);
+
+            if (outputAsJson)
+            {
+                var output = result ?? new CommandResult
+                {
+                    Status = "success",
+                    Messages = new[] { "Command executed successfully." }
+                };
+                Console.WriteLine(JsonSerializer.Serialize(output));
+            }
+
+            Environment.Exit(0);
+        }
+        catch (Exception ex)
+        {
+            if (outputAsJson)
+            {
+                var result = new CommandResult
+                {
+                    Status = "error",
+                    Messages = new[] { ex.Message },
+                    Data = new { errorType = ex.GetType().Name }
+                };
+                Console.WriteLine(JsonSerializer.Serialize(result));
+            }
+            else
+            {
+                Console.Error.WriteLine($"[ERROR] {ex.Message}");
+            }
+
+            Environment.Exit(2);
+        }
     }
 }

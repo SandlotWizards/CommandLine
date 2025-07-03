@@ -1,23 +1,18 @@
-﻿using SandlotWizards.ActionLogger;
-using SandlotWizards.CommandLineParser.Core;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using SandlotWizards.CommandLineParser.Core;
 
 namespace SandlotWizards.CommandLineParser.BuiltIn;
 
 public class GreetCommand : ICommand
 {
-    public Task ExecuteAsync(CommandContext context)
+    public Task<CommandResult?> ExecuteAsync(CommandContext context)
     {
-        if (context.Arguments.TryGetValue("name", out var name) && !string.IsNullOrWhiteSpace(name))
+        Console.WriteLine("Hello! Welcome to the Sandlot Wizards CLI.");
+        return Task.FromResult<CommandResult?>(new CommandResult
         {
-            ActionLog.Global.Message($"Hello, {name}!", ConsoleColor.Green);
-        }
-        else
-        {
-            ActionLog.Global.Message("Hello there!", ConsoleColor.Green);
-        }
-
-        return Task.CompletedTask;
+            Status = "success",
+            Messages = new[] { "Greeting displayed." }
+        });
     }
 }

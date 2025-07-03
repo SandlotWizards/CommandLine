@@ -34,6 +34,5 @@ await CommandLineApp.Run(args, registry =>
     registry.Register("package", "add", app.Services.GetRequiredService<AddPackageCommand>());
     registry.Register("package", "list", app.Services.GetRequiredService<ListPackagesCommand>());
     registry.Register("package", "remove", app.Services.GetRequiredService<RemovePackageCommand>());
-
     PluginLoader.RegisterPluginRoutes(app.Services, registry);
 }, app.Services);
