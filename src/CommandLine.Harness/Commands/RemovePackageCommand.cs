@@ -1,4 +1,5 @@
-﻿using SandlotWizards.CommandLineParser.Core;
+﻿using SandlotWizards.ActionLogger;
+using SandlotWizards.CommandLineParser.Core;
 
 namespace CommandLine.Harness.Commands;
 
@@ -9,7 +10,7 @@ public class RemovePackageCommand : ICommand
         var packageId = context.Arguments.GetValueOrDefault("name");
         if (string.IsNullOrWhiteSpace(packageId))
         {
-            Console.WriteLine("--name argument is required.");
+            ActionLog.Global.Message("--name argument is required.");
             return new CommandResult
             {
                 Status = "error",
@@ -21,7 +22,7 @@ public class RemovePackageCommand : ICommand
         if (Directory.Exists(path))
         {
             Directory.Delete(path, true);
-            Console.WriteLine($"Package '{packageId}' removed.");
+            ActionLog.Global.Message($"Package '{packageId}' removed.");
             return new CommandResult
             {
                 Status = "success",
@@ -31,7 +32,7 @@ public class RemovePackageCommand : ICommand
         }
         else
         {
-            Console.WriteLine($"Package '{packageId}' not found.");
+            ActionLog.Global.Message($"Package '{packageId}' not found.");
             return new CommandResult
             {
                 Status = "success",

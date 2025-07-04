@@ -1,6 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using SandlotWizards.ActionLogger;
 using SandlotWizards.CommandLineParser.Core;
+using System.Threading.Tasks;
 
 namespace SandlotWizards.CommandLineParser.BuiltIn;
 
@@ -8,7 +8,7 @@ public class GreetCommand : ICommand
 {
     public Task<CommandResult?> ExecuteAsync(CommandContext context)
     {
-        Console.WriteLine("Hello! Welcome to the Sandlot Wizards CLI.");
+        ActionLog.Global.Message("Hello! Welcome to the Sandlot Wizards CLI.");
         return Task.FromResult<CommandResult?>(new CommandResult
         {
             Status = "success",

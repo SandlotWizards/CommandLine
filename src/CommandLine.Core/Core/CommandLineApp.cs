@@ -62,7 +62,6 @@ public static class CommandLineApp
             if (!isChildProcess) outputWriter.WriteHeader();
 
             var result = await command.ExecuteAsync(context);
-            if (!isChildProcess) outputWriter.WriteResult(result ?? new CommandResult { Status = "success" });
 
             if (!isChildProcess) outputWriter.WriteTrailer();
         }

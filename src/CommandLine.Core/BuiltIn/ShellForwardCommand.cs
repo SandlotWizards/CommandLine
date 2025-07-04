@@ -1,4 +1,5 @@
-﻿using SandlotWizards.CommandLineParser.Core;
+﻿using SandlotWizards.ActionLogger;
+using SandlotWizards.CommandLineParser.Core;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -74,7 +75,7 @@ public class ShellForwardCommand : ICommand
             }
         }
 
-        Console.WriteLine(output);
+        ActionLog.Global.Message(output);
         return new CommandResult
         {
             Status = "success",

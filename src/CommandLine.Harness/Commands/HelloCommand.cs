@@ -1,4 +1,5 @@
-﻿using SandlotWizards.CommandLineParser.Core;
+﻿using SandlotWizards.ActionLogger;
+using SandlotWizards.CommandLineParser.Core;
 
 namespace CommandLine.Harness.Commands
 {
@@ -7,7 +8,7 @@ namespace CommandLine.Harness.Commands
         public async Task<CommandResult?> ExecuteAsync(CommandContext context)
         {
             var message = "Copilot CLI is running and command dispatch works!";
-            Console.WriteLine(message);
+            ActionLog.Global.Message(message);
 
             return await Task.FromResult(new CommandResult
             {

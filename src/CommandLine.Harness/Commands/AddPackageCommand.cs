@@ -1,6 +1,7 @@
 ﻿using NuGet.Configuration;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
+using SandlotWizards.ActionLogger;
 using SandlotWizards.CommandLineParser.Core;
 using System.IO.Compression;
 
@@ -13,7 +14,7 @@ public class AddPackageCommand : ICommand
         var packageId = context.Arguments.GetValueOrDefault("name");
         if (string.IsNullOrWhiteSpace(packageId))
         {
-            Console.WriteLine("--name argument is required.");
+            ActionLog.Global.Message("--name argument is required.");
             return new CommandResult
             {
                 Status = "error",
@@ -50,7 +51,7 @@ public class AddPackageCommand : ICommand
 
             if (!success)
             {
-                Console.WriteLine("Failed to download package.");
+                ActionLog.Global.Message("Failed to download package.");
                 return new CommandResult
                 {
                     Status = "error",
@@ -65,7 +66,7 @@ public class AddPackageCommand : ICommand
 
         ZipFile.ExtractToDirectory(nupkgPath, extractPath);
 
-        Console.WriteLine($"Package '{packageId}' installed to {extractPath}");
+        ActionLog.Global.Message($"Package '{packageId}' installed to {extractPath}");
         return new CommandResult
         {
             Status = "success",

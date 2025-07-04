@@ -1,4 +1,5 @@
-﻿using SandlotWizards.CommandLineParser.Core;
+﻿using SandlotWizards.ActionLogger;
+using SandlotWizards.CommandLineParser.Core;
 
 namespace CommandLine.Harness.Commands;
 
@@ -9,7 +10,7 @@ public class ListPackagesCommand : ICommand
         var root = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".copilot", "packages");
         if (!Directory.Exists(root))
         {
-            Console.WriteLine("No packages installed.");
+            ActionLog.Global.Message("No packages installed.");
             return new CommandResult
             {
                 Status = "success",
@@ -24,7 +25,7 @@ public class ListPackagesCommand : ICommand
 
         if (packages.Length == 0)
         {
-            Console.WriteLine("No packages installed.");
+            ActionLog.Global.Message("No packages installed.");
             return new CommandResult
             {
                 Status = "success",
@@ -33,9 +34,9 @@ public class ListPackagesCommand : ICommand
             };
         }
 
-        Console.WriteLine("Installed packages:");
+        ActionLog.Global.Message("Installed packages:");
         foreach (var dir in packages)
-            Console.WriteLine("- " + dir);
+            ActionLog.Global.Message("- " + dir);
 
         return new CommandResult
         {

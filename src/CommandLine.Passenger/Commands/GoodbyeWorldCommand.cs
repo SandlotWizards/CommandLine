@@ -1,4 +1,5 @@
-﻿using SandlotWizards.CommandLineParser.Core;
+﻿using SandlotWizards.ActionLogger;
+using SandlotWizards.CommandLineParser.Core;
 using System;
 using System.Threading.Tasks;
 
@@ -8,7 +9,7 @@ public class GoodbyeWorldCommand : ICommand
     {
         var name = context.Arguments.TryGetValue("name", out var val) ? val : "world";
         var message = $"Goodbye, {name}!";
-        Console.WriteLine(message);
+        ActionLog.Global.Message(message);
 
         return Task.FromResult<CommandResult?>(new CommandResult
         {

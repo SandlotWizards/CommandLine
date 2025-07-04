@@ -1,4 +1,5 @@
-﻿using SandlotWizards.CommandLineParser.Core;
+﻿using SandlotWizards.ActionLogger;
+using SandlotWizards.CommandLineParser.Core;
 using System;
 using System.Text.Json;
 
@@ -16,7 +17,7 @@ namespace SandlotWizards.CommandLineParser.Output
                 Status = "success",
                 Messages = new[] { "Command executed successfully." }
             };
-            Console.WriteLine(JsonSerializer.Serialize(output));
+            ActionLog.Global.Message(JsonSerializer.Serialize(output));
         }
 
         public void WriteHelp(string helpText)
@@ -26,7 +27,7 @@ namespace SandlotWizards.CommandLineParser.Output
                 Status = "help",
                 Messages = new[] { helpText }
             };
-            Console.WriteLine(JsonSerializer.Serialize(result));
+            ActionLog.Global.Message(JsonSerializer.Serialize(result));
         }
 
         public void WriteError(Exception ex)
@@ -37,7 +38,7 @@ namespace SandlotWizards.CommandLineParser.Output
                 Messages = new[] { ex.Message },
                 Data = new { errorType = ex.GetType().Name }
             };
-            Console.WriteLine(JsonSerializer.Serialize(result));
+            ActionLog.Global.Message(JsonSerializer.Serialize(result));
         }
     }
 }
