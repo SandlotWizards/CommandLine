@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CommandLine.Passenger": {
+      "commandName": "Project",
+      "commandLineArgs": "system describe --output json"
+    }
+  }
+}

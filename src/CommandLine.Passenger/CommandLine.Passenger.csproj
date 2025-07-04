@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>lore-test</ToolCommandName>
+    <Version>2.5.0</Version>
+    <Authors>Sandlot Wizards</Authors>
+    <Company>Sandlot Wizards</Company>
+    <RootNamespace>SandlotWizards.Passenger</RootNamespace>
+    <PackageId>SandlotWizards.Passenger</PackageId>
+    <Description>
+      Modular, DI-ready command-line parser with built-in command registration, execution pipeline, help rendering, localization, and AI-aware context handling.
+    </Description>
+    <PackageTags>
+      cli;command-line;parser;dotnet;ai;rag;help;localization;hooks;execution-pipeline;sandlot;extensible;modular
+    </PackageTags>
+    <RepositoryUrl>git@github.com:SandlotWizards/CommandLine.git</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CommandLine.Core\CommandLine.Core.csproj" />
+  </ItemGroup>
+
+</Project>

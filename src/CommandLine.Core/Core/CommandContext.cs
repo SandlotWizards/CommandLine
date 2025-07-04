@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SandlotWizards.CommandLineParser.Core;
 
@@ -23,6 +24,18 @@ public class CommandContext : ICommandContext
     public DateTime StartTimestamp { get; set; } = DateTime.UtcNow;
     public DateTime? EndTimestamp { get; set; }
     public TimeSpan? Elapsed => EndTimestamp.HasValue ? EndTimestamp - StartTimestamp : null;
+
+    public string[] PositionalArgs { get; set; } = Array.Empty<string>();
+
+    public string[] ForwardableArgs => Arguments
+        .Where(kvp => !Reserved.Contains(kvp.Key.ToLowerInvariant()))
+        .SelectMany(kvp => new[] { $"--{kvp.Key}", kvp.Value ?? string.Empty })
+        .ToArray();
+
+    public static readonly HashSet<string> Reserved = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "help", "version", "output"
+    };
 
     public T Resolve<T>() where T : notnull
     {

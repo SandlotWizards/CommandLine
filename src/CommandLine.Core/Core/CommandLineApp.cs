@@ -1,9 +1,9 @@
 using SandlotWizards.ActionLogger;
 using SandlotWizards.ActionLogger.Services;
 using SandlotWizards.CommandLineParser.Help;
+using SandlotWizards.CommandLineParser.Output;
 using SandlotWizards.CommandLineParser.Parsing;
 using System;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SandlotWizards.CommandLineParser.Core;
@@ -25,6 +25,7 @@ public static class CommandLineApp
         registry.Register("core", "version", new BuiltIn.VersionCommand());
 
         configure(registry);
+
         var parser = new ContextParser();
         var context = parser.Parse(args);
         context.Metadata["ServiceProvider"] = serviceProvider;
@@ -32,26 +33,7 @@ public static class CommandLineApp
         var outputAsJson = context.Arguments.TryGetValue("output", out var format) && format?.ToLowerInvariant() == "json";
         context.Metadata["OutputFormat"] = outputAsJson ? "json" : "text";
 
-        ActionLog.Global.PrintHeader(ConsoleColor.Cyan);
-
-        if (string.IsNullOrWhiteSpace(context.CommandName))
-        {
-            if (context.Arguments.ContainsKey("version"))
-            {
-                ActionLog.Global.Message("lore CLI version 1.0.0", ConsoleColor.Gray);
-                ActionLog.Global.PrintTrailer(ConsoleColor.Cyan);
-                Environment.Exit(0);
-            }
-
-            if (context.Arguments.ContainsKey("help") || context.Arguments.ContainsKey("list"))
-            {
-                Console.WriteLine("Available Commands:");
-                Console.WriteLine("- core greet: Prints a friendly greeting");
-                Console.WriteLine("- core version: Shows the version");
-                Console.WriteLine("- core autocomplete: Generates autocomplete script");
-                Environment.Exit(0);
-            }
-        }
+        var outputWriter = OutputWriterFactory.FromContext(context);
 
         try
         {
@@ -63,50 +45,30 @@ public static class CommandLineApp
             };
 
             if (command is null)
-            {
                 throw new InvalidOperationException($"No command registered for {context.Noun} {context.Verb}.");
-            }
 
             if (context.Arguments.ContainsKey("help"))
             {
+                context.Metadata["OutputFormat"] = "help";
+                outputWriter = OutputWriterFactory.FromContext(context);
+                outputWriter.WriteHeader();
                 var helpText = await HelpProvider.GetHelpAsync(context.CommandName);
-                Console.WriteLine(helpText);
-                Environment.Exit(0);
+                outputWriter.WriteHelp(helpText);
+                outputWriter.WriteTrailer();
+                return;
             }
+
+            outputWriter.WriteHeader();
 
             var result = await command.ExecuteAsync(context);
+            outputWriter.WriteResult(result ?? new CommandResult { Status = "success" });
 
-            if (outputAsJson)
-            {
-                var output = result ?? new CommandResult
-                {
-                    Status = "success",
-                    Messages = new[] { "Command executed successfully." }
-                };
-                Console.WriteLine(JsonSerializer.Serialize(output));
-            }
-
-            Environment.Exit(0);
+            outputWriter.WriteTrailer();
         }
         catch (Exception ex)
         {
-            if (outputAsJson)
-            {
-                var result = new CommandResult
-                {
-                    Status = "error",
-                    Messages = new[] { ex.Message },
-                    Data = new { errorType = ex.GetType().Name }
-                };
-                Console.WriteLine(JsonSerializer.Serialize(result));
-            }
-            else
-            {
-                Console.Error.WriteLine($"[ERROR] {ex.Message}");
-            }
-
+            outputWriter.WriteError(ex);
             Environment.Exit(2);
         }
     }
-
 }
