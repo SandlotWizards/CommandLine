@@ -5,7 +5,7 @@
     <OutputType>Exe</OutputType>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>lore-test</ToolCommandName>
-    <Version>2.6.0</Version>
+    <Version>2.7.0</Version>
     <Authors>Sandlot Wizards</Authors>
     <Company>Sandlot Wizards</Company>
     <RootNamespace>SandlotWizards.Passenger</RootNamespace>
