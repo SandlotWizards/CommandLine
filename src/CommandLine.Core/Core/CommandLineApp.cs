@@ -33,6 +33,7 @@ public static class CommandLineApp
         var outputAsJson = context.Arguments.TryGetValue("output", out var format) && format?.ToLowerInvariant() == "json";
         context.Metadata["OutputFormat"] = outputAsJson ? "json" : "text";
 
+        var isChildProcess = Environment.GetEnvironmentVariable("IS_PASSENGER") == "1";
         var outputWriter = OutputWriterFactory.FromContext(context);
 
         try
@@ -51,19 +52,19 @@ public static class CommandLineApp
             {
                 context.Metadata["OutputFormat"] = "help";
                 outputWriter = OutputWriterFactory.FromContext(context);
-                outputWriter.WriteHeader();
+                if (!isChildProcess) outputWriter.WriteHeader();
                 var helpText = await HelpProvider.GetHelpAsync(context.CommandName);
                 outputWriter.WriteHelp(helpText);
-                outputWriter.WriteTrailer();
+                if (!isChildProcess) outputWriter.WriteTrailer();
                 return;
             }
 
-            outputWriter.WriteHeader();
+            if (!isChildProcess) outputWriter.WriteHeader();
 
             var result = await command.ExecuteAsync(context);
             outputWriter.WriteResult(result ?? new CommandResult { Status = "success" });
 
-            outputWriter.WriteTrailer();
+            if (!isChildProcess) outputWriter.WriteTrailer();
         }
         catch (Exception ex)
         {
