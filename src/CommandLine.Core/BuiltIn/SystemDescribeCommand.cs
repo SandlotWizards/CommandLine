@@ -1,6 +1,9 @@
-﻿using SandlotWizards.CommandLineParser.Core;
+﻿using SandlotWizards.ActionLogger;
+using SandlotWizards.CommandLineParser.Core;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace SandlotWizards.CommandLineParser.BuiltIn;
@@ -42,6 +45,11 @@ public class SystemDescribeCommand : IRoutableCommand
             entryPoint = _toolName, // assumes tool command = tool name
             commands = entries
         };
+
+        var outputMode = context.Metadata["OutputFormat"]?.ToString();
+
+        if (outputMode == "text")
+            ActionLog.Global.Message(JsonSerializer.Serialize(manifest));
 
         return Task.FromResult<CommandResult?>(new CommandResult
         {

@@ -5,6 +5,7 @@ using SandlotWizards.CommandLineParser.BuiltIn;
 using SandlotWizards.SoftwareFactory.Commands;
 using SandlotWizards.CommandLineParser.Input;
 using SandlotWizards.CommandLineParser.Registration;
+using System;
 
 var builder = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
@@ -28,6 +29,11 @@ commands.Add(new RoutableCommandDescriptor("system", "describe", _ =>
 
 commands.Add(new RoutableCommandDescriptor("system", "list", _ =>
     new SystemListCommand(commands)));
+
+foreach (var cmd in commands)
+{
+    Console.WriteLine($"[debug] {cmd.Noun} {cmd.Verb} - ShowInList: {cmd.ShowInList}");
+}
 
 await CommandLineApp.Run(args, registry =>
 {

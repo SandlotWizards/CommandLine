@@ -30,5 +30,5 @@ public class CommandRegistry : ICommandRegistry
             (c is RoutableCommandDescriptor r && r.Noun == noun && r.Verb == verb));
     }
 
-    public IEnumerable<object> ListAll() => _commands;
+    public IEnumerable<object> GetAll() => _commands;
 }

@@ -51,18 +51,20 @@ await CommandLineApp.Run(args, registry =>
         }
     }
 
-    // 💡 Load local IRoutableCommands
     var localCommands = CommandRegistrationHelper.LoadCommands(app.Services,
         new HelloCommand(),
         new VersionCommand()
     );
-
-    var systemDescribe = new SystemDescribeCommand("copilot", localCommands);
-    var systemList = new SystemListCommand(localCommands);
-
-    localCommands.Add(new RoutableCommandDescriptor(systemDescribe));
-    localCommands.Add(new RoutableCommandDescriptor(systemList));
-
-    // 🧠 Register self-describing local commands
     registry.RegisterAll(localCommands);
+
+    var fullCommandList = registry.GetAll()
+        .OfType<IRoutableCommandDescriptor>()
+        .Where(c => c.IsEnabled)
+        .ToList();
+
+    var systemList = new SystemListCommand(fullCommandList);
+    fullCommandList.Add(new RoutableCommandDescriptor(systemList));
+    var systemDescribe = new SystemDescribeCommand("copilot", fullCommandList);
+    registry.Register(new RoutableCommandDescriptor(systemList));
+    registry.Register(new RoutableCommandDescriptor(systemDescribe));
 }, app.Services);
