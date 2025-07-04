@@ -1,13 +1,11 @@
 ﻿using SandlotWizards.CommandLineParser.Core;
 using System.Collections.Generic;
-using System;
-using System.Text.Json;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SandlotWizards.CommandLineParser.BuiltIn;
 
-public class SystemDescribeCommand : ICommand
+public class SystemDescribeCommand : IRoutableCommand
 {
     private readonly string _toolName;
     private readonly IEnumerable<IRoutableCommandDescriptor> _commands;
@@ -18,15 +16,23 @@ public class SystemDescribeCommand : ICommand
         _commands = commands;
     }
 
+    public string Noun => "system";
+    public string Verb => "describe";
+    public string? Description => "Describes available commands for plugin discovery.";
+    public string? Group => "Core Utilities";
+    public bool IsEnabled => true;
+    public bool ShowInList => false; // Hidden from system list
+
     public Task<CommandResult?> ExecuteAsync(CommandContext context)
     {
         var entries = _commands
-            .Where(c => !(c.Noun == "system" && c.Verb == "describe")) // exclude self
+            .Where(c => c.IsEnabled && !(c.Noun == "system" && c.Verb == "describe"))
             .Select(c => new
             {
                 noun = c.Noun,
                 verb = c.Verb,
-                description = "No description provided"
+                description = c.Description ?? "No description provided",
+                group = c.Group ?? "General"
             });
 
         var manifest = new
@@ -36,11 +42,6 @@ public class SystemDescribeCommand : ICommand
             entryPoint = _toolName, // assumes tool command = tool name
             commands = entries
         };
-
-        var json = JsonSerializer.Serialize(manifest, new JsonSerializerOptions
-        {
-            WriteIndented = true
-        });
 
         return Task.FromResult<CommandResult?>(new CommandResult
         {

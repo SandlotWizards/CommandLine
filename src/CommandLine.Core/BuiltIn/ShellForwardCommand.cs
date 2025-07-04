@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SandlotWizards.CommandLineParser.BuiltIn;
 
-public class ShellForwardCommand : ICommand
+public class ShellForwardCommand : IRoutableCommand
 {
     private readonly string _exe;
     private readonly string _noun;
@@ -20,6 +20,13 @@ public class ShellForwardCommand : ICommand
         _noun = noun;
         _verb = verb;
     }
+
+    public string Noun => _noun;
+    public string Verb => _verb;
+    public string? Description => "Forwards command to a local shell-executed .NET tool.";
+    public string? Group => "Command Forwarders";
+    public bool IsEnabled => true;
+    public bool ShowInList => false;
 
     public async Task<CommandResult?> ExecuteAsync(CommandContext context)
     {

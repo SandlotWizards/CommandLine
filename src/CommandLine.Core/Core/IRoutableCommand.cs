@@ -1,7 +1,6 @@
-﻿using SandlotWizards.CommandLineParser.Core;
-using System;
+﻿namespace SandlotWizards.CommandLineParser.Core;
 
-public interface IRoutableCommandDescriptor
+public interface IRoutableCommand : ICommand
 {
     string Noun { get; }
     string Verb { get; }
@@ -10,6 +9,4 @@ public interface IRoutableCommandDescriptor
 
     bool IsEnabled { get; }
     bool ShowInList { get; }
-
-    ICommand Resolve(IServiceProvider services);
 }

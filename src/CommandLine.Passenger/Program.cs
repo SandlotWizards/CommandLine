@@ -2,28 +2,34 @@
 using Microsoft.Extensions.Hosting;
 using SandlotWizards.CommandLineParser.Core;
 using SandlotWizards.CommandLineParser.BuiltIn;
-using System.Collections.Generic;
+using SandlotWizards.SoftwareFactory.Commands;
+using SandlotWizards.CommandLineParser.Input;
+using SandlotWizards.CommandLineParser.Registration;
 
 var builder = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
+        services.AddScoped<IInteractivePromptService, ConsolePromptService>();
         services.AddSingleton<GoodbyeWorldCommand>();
+        services.AddSingleton<AddConnectionProfileCommand>();
     });
 
 var app = builder.Build();
 
-// ✅ Build the list of descriptors
-var commands = new List<IRoutableCommandDescriptor>
-{
-    new RoutableCommandDescriptor("goodbye", "world", _ => app.Services.GetRequiredService<GoodbyeWorldCommand>())
-};
+// Load enabled commands via helper
+var commands = CommandRegistrationHelper.LoadCommands(app.Services,
+    app.Services.GetRequiredService<GoodbyeWorldCommand>(),
+    app.Services.GetRequiredService<AddConnectionProfileCommand>()
+);
 
-// ✅ Add system describe as the last entry, passing the same list
+// Inject dynamic system descriptor
 commands.Add(new RoutableCommandDescriptor("system", "describe", _ =>
     new SystemDescribeCommand("lore-test", commands)));
 
+commands.Add(new RoutableCommandDescriptor("system", "list", _ =>
+    new SystemListCommand(commands)));
+
 await CommandLineApp.Run(args, registry =>
 {
-    foreach (var cmd in commands)
-        registry.Register(cmd.Noun, cmd.Verb, cmd.Resolve);
+    registry.RegisterAll(commands);
 }, app.Services);

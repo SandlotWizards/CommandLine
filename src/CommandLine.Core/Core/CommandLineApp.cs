@@ -21,9 +21,7 @@ public static class CommandLineApp
         }
 
         var registry = new CommandRegistry();
-        registry.Register("core", "greet", new BuiltIn.GreetCommand());
-        registry.Register("core", "version", new BuiltIn.VersionCommand());
-
+        
         configure(registry);
 
         var parser = new ContextParser();
@@ -35,6 +33,15 @@ public static class CommandLineApp
 
         var isChildProcess = Environment.GetEnvironmentVariable("IS_PASSENGER") == "1";
         var outputWriter = OutputWriterFactory.FromContext(context);
+
+        if (context.Arguments.ContainsKey("version") && string.IsNullOrWhiteSpace(context.CommandName))
+        {
+            if (!isChildProcess) outputWriter.WriteHeader();
+            var versionCommand = new BuiltIn.VersionCommand();
+            await versionCommand.ExecuteAsync(context);
+            if (!isChildProcess) outputWriter.WriteTrailer();
+            return;
+        }
 
         try
         {

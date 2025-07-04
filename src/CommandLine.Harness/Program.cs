@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SandlotWizards.CommandLineParser.BuiltIn;
 using SandlotWizards.CommandLineParser.Core;
+using SandlotWizards.CommandLineParser.Registration;
 using SandlotWizards.CommandLineParser.Services;
 using Serilog;
 
@@ -30,26 +31,38 @@ var app = builder.Build();
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
 logger.LogInformation("Starting SandlotWizard CLI...");
 
-// 🚀 Trigger passenger discovery at startup
+// 🚀 Discover passenger plugins
 var discovery = app.Services.GetRequiredService<PassengerDiscoveryService>();
 var passengers = await discovery.DiscoverAsync();
 logger.LogInformation("Discovered {Count} passenger(s)", passengers.Count);
 
 await CommandLineApp.Run(args, registry =>
 {
+    // 🔌 Register passenger CLI commands (forwarded)
     foreach (var passenger in passengers)
     {
         foreach (var cmd in passenger.Commands)
         {
-            registry.Register(cmd.Noun, cmd.Verb, new ShellForwardCommand(
+            registry.Register(new RoutableCommandDescriptor(new ShellForwardCommand(
                 passenger.EntryPoint,
                 cmd.Noun,
                 cmd.Verb
-            ));
+            )));
         }
     }
-    registry.Register("system", "hello", app.Services.GetRequiredService<HelloCommand>());
-    registry.Register("package", "add", app.Services.GetRequiredService<AddPackageCommand>());
-    registry.Register("package", "list", app.Services.GetRequiredService<ListPackagesCommand>());
-    registry.Register("package", "remove", app.Services.GetRequiredService<RemovePackageCommand>());
+
+    // 💡 Load local IRoutableCommands
+    var localCommands = CommandRegistrationHelper.LoadCommands(app.Services,
+        new HelloCommand(),
+        new VersionCommand()
+    );
+
+    var systemDescribe = new SystemDescribeCommand("copilot", localCommands);
+    var systemList = new SystemListCommand(localCommands);
+
+    localCommands.Add(new RoutableCommandDescriptor(systemDescribe));
+    localCommands.Add(new RoutableCommandDescriptor(systemList));
+
+    // 🧠 Register self-describing local commands
+    registry.RegisterAll(localCommands);
 }, app.Services);

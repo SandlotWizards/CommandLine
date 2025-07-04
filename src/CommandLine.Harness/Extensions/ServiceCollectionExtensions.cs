@@ -9,9 +9,6 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<HelloCommand>();
-        services.AddScoped<ListPackagesCommand>();
-        services.AddScoped<AddPackageCommand>();
-        services.AddScoped<RemovePackageCommand>();
         return services;
     }
 }

@@ -18,6 +18,11 @@ public class CommandRegistry : ICommandRegistry
         _commands.Add(new RoutableCommandDescriptor(noun, verb, factory));
     }
 
+    public void Register(IRoutableCommandDescriptor descriptor)
+    {
+        _commands.Add(descriptor);
+    }
+
     public object? Resolve(string noun, string verb)
     {
         return _commands.FirstOrDefault(c =>
