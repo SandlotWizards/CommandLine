@@ -1,9 +1,9 @@
 ﻿using SandlotWizards.ActionLogger;
 using SandlotWizards.CommandLineParser.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace SandlotWizards.CommandLineParser.BuiltIn;
@@ -48,7 +48,18 @@ public class SystemDescribeCommand : IRoutableCommand
 
         var outputMode = context.Metadata["OutputFormat"]?.ToString();
 
-        if (outputMode == "text")
+        if (outputMode == "json")
+        {
+            var json = JsonSerializer.Serialize(manifest, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+
+            Console.WriteLine(json); // ✅ plugin discovery output to stdout
+            //return Task.FromResult<CommandResult?>(null); // prevents OutputWriter from repeating it
+        }
+        
+        if (outputMode == "test")
             ActionLog.Global.Message(JsonSerializer.Serialize(manifest));
 
         return Task.FromResult<CommandResult?>(new CommandResult
