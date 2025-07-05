@@ -1,4 +1,4 @@
-using SandlotWizards.CommandLineParser.Core;
+using SandlotWizards.CommandLineParser.Execution;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ public class ContextParser : IContextParser
         if (args.Length == 0)
             return context;
 
-        // Determine multilevel command name
+        // determine multilevel command name
         var parts = new List<string>();
         if (!args[0].StartsWith("--"))
             parts.Add(args[0]);
@@ -23,10 +23,10 @@ public class ContextParser : IContextParser
             parts.Add(args[1]);
 
         context.Noun = parts.Count > 0 ? parts[0] : string.Empty;
-context.Verb = parts.Count > 1 ? parts[1] : string.Empty;
-context.CommandName = string.Join(" ", parts); // Still preserved for backward compatibility
+        context.Verb = parts.Count > 1 ? parts[1] : string.Empty;
+        context.CommandName = string.Join(" ", parts); // still preserved for backward compatibility
 
-        // Parse CLI arguments
+        // parse cli arguments
         for (int i = parts.Count; i < args.Length; i++)
         {
             if (args[i].StartsWith("--"))
@@ -34,10 +34,15 @@ context.CommandName = string.Join(" ", parts); // Still preserved for backward c
                 var key = args[i].TrimStart('-');
                 var value = i + 1 < args.Length && !args[i + 1].StartsWith("--") ? args[++i] : "";
                 context.Arguments[key] = value;
+
+                if (string.Equals(key, "dry-run", StringComparison.OrdinalIgnoreCase))
+                {
+                    context.Metadata["DryRun"] = true;
+                }
             }
         }
 
-        // Inject environment variable overrides
+        // inject environment variable overrides
         foreach (var key in Environment.GetEnvironmentVariables().Keys.Cast<string>())
         {
             if (key.StartsWith("SANDLOT_"))

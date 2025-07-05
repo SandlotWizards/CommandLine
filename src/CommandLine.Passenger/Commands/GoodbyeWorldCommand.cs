@@ -1,5 +1,5 @@
 ﻿using SandlotWizards.ActionLogger;
-using SandlotWizards.CommandLineParser.Core;
+using SandlotWizards.CommandLineParser.Execution;
 using System.Threading.Tasks;
 
 public class GoodbyeWorldCommand : IRoutableCommand
@@ -15,7 +15,9 @@ public class GoodbyeWorldCommand : IRoutableCommand
     {
         var name = context.Arguments.TryGetValue("name", out var val) ? val : "world";
         var message = $"Goodbye, {name}!";
-        ActionLog.Global.Message(message);
+
+        var displayText = context.IsDryRun ? $"[dry-run] {message}" : message;
+        ActionLog.Global.Message(displayText);
 
         return Task.FromResult<CommandResult?>(new CommandResult
         {

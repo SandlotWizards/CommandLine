@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SandlotWizards.CommandLineParser.BuiltIn;
-using SandlotWizards.CommandLineParser.Core;
+using SandlotWizards.CommandLineParser.Commands.BuiltIn;
+using SandlotWizards.CommandLineParser.Execution;
 using System;
 using System.Collections.Generic;
 using System.Linq;

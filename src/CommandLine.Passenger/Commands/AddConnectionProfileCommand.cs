@@ -1,6 +1,6 @@
 ﻿using SandlotWizards.ActionLogger;
-using SandlotWizards.CommandLineParser.Core;
-using SandlotWizards.CommandLineParser.Input;
+using SandlotWizards.CommandLineParser.Execution;
+using SandlotWizards.CommandLineParser.IO.Input;
 using System;
 using System.Threading.Tasks;
 
@@ -28,9 +28,19 @@ public sealed class AddConnectionProfileCommand : IRoutableCommand
 
         using (ActionLog.Global.BeginStep("Adding connection profile..."))
         {
+            if (context.IsDryRun)
+            {
+                ActionLog.Global.Info($"[Dry-Run] Connection profile added: Type={type}, Organization={organizationName}, Token={personalAccessToken}");
+                return await Task.FromResult<CommandResult?>(new CommandResult
+                {
+                    Status = "success",
+                    Messages = new[] { "Success!" }
+                });
+            }
             //var service = context.Resolve<IConnectionProfileService>();
             //await service.ExecuteAsync(this);
-            ActionLog.Global.Message($"Connection profile added: Type={type}, Organization={organizationName}, Token={personalAccessToken}");
+
+            ActionLog.Global.Info($"Connection profile added: Type={type}, Organization={organizationName}, Token={personalAccessToken}");
         }
 
         return await Task.FromResult<CommandResult?>(new CommandResult
