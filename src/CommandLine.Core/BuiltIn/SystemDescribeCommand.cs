@@ -36,7 +36,9 @@ public class SystemDescribeCommand : IRoutableCommand
                 noun = c.Noun,
                 verb = c.Verb,
                 description = c.Description ?? "No description provided",
-                group = c.Group ?? "General"
+                group = c.Group ?? "General",
+                isEnabled = c.IsEnabled,
+                showInList = c.ShowInList
             });
 
         var manifest = new

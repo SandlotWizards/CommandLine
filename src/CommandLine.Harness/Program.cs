@@ -69,7 +69,11 @@ await CommandLineApp.Run(args, registry =>
                 registry.Register(new RoutableCommandDescriptor(new ShellForwardCommand(
                     passenger.EntryPoint,
                     cmd.Noun,
-                    cmd.Verb
+                    cmd.Verb,
+                    cmd.Description,
+                    cmd.Group,
+                    cmd.IsEnabled,
+                    cmd.ShowInList
                 )));
             }
         }
