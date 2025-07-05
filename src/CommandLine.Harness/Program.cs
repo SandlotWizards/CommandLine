@@ -19,7 +19,6 @@ var builder = Host.CreateDefaultBuilder(args)
     })
     .ConfigureServices((hostContext, services) =>
     {
-        isPassenger = hostContext.Configuration.GetValue<Boolean>("Passenger");
         using var tempProvider = services.BuildServiceProvider();
 
         var commandTypes = Assembly.GetExecutingAssembly()
