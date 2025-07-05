@@ -1,5 +1,6 @@
 using SandlotWizards.ActionLogger;
 using SandlotWizards.ActionLogger.Services;
+using SandlotWizards.CommandLineParser.BuiltIn;
 using SandlotWizards.CommandLineParser.Help;
 using SandlotWizards.CommandLineParser.Output;
 using SandlotWizards.CommandLineParser.Parsing;
@@ -37,7 +38,7 @@ public static class CommandLineApp
         if (context.Arguments.ContainsKey("version") && string.IsNullOrWhiteSpace(context.CommandName))
         {
             if (!isChildProcess) outputWriter.WriteHeader();
-            var versionCommand = new BuiltIn.VersionCommand();
+            var versionCommand = new VersionCommand();
             await versionCommand.ExecuteAsync(context);
             if (!isChildProcess) outputWriter.WriteTrailer();
             return;

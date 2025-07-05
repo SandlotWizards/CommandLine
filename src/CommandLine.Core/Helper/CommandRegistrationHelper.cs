@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SandlotWizards.CommandLineParser.Core;
 
-namespace SandlotWizards.CommandLineParser.Registration;
+namespace SandlotWizards.CommandLineParser.Helper;
 
 public static class CommandRegistrationHelper
 {

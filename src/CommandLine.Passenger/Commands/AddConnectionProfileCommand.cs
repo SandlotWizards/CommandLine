@@ -4,7 +4,7 @@ using SandlotWizards.CommandLineParser.Input;
 using System;
 using System.Threading.Tasks;
 
-namespace SandlotWizards.SoftwareFactory.Commands;
+namespace SandlotWizards.Passenger.Commands;
 
 public sealed class AddConnectionProfileCommand : IRoutableCommand
 {

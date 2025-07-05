@@ -2,7 +2,7 @@
   "profiles": {
     "CommandLine.Harness": {
       "commandName": "Project",
-      "commandLineArgs": "system describe --output json\r\n"
+      "commandLineArgs": "system list\r\n"
     }
   }
 }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace SandlotWizards.CommandLineParser.BuiltIn;
 
+[ExcludeFromCommandDiscovery]
 public class SystemDescribeCommand : IRoutableCommand
 {
     private readonly string _toolName;
@@ -29,7 +30,7 @@ public class SystemDescribeCommand : IRoutableCommand
     public Task<CommandResult?> ExecuteAsync(CommandContext context)
     {
         var entries = _commands
-            .Where(c => c.IsEnabled && !(c.Noun == "system" && c.Verb == "describe"))
+            .Where(c => c.IsEnabled && !(c.Noun == "system" && c.Verb == "describe") && !(c.Noun == "system" && c.Verb == "list"))
             .Select(c => new
             {
                 noun = c.Noun,
@@ -56,7 +57,7 @@ public class SystemDescribeCommand : IRoutableCommand
             });
 
             Console.WriteLine(json); // ✅ plugin discovery output to stdout
-            //return Task.FromResult<CommandResult?>(null); // prevents OutputWriter from repeating it
+            return Task.FromResult<CommandResult?>(null); // prevents OutputWriter from repeating it
         }
         
         if (outputMode == "test")

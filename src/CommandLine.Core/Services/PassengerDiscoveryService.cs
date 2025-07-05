@@ -1,4 +1,3 @@
-using SandlotWizards.CommandLineParser.Core;
 using SandlotWizards.CommandLineParser.Models;
 using System;
 using System.Collections.Generic;
@@ -26,11 +25,7 @@ public class PassengerDiscoveryService
 
             try
             {
-                var commandResult = JsonSerializer.Deserialize<CommandResult>(describeOutput, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
-                var manifest = JsonSerializer.Deserialize<PassengerManifest>(commandResult!.Data!.ToString()!, new JsonSerializerOptions
+                var manifest = JsonSerializer.Deserialize<PassengerManifest>(describeOutput, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });

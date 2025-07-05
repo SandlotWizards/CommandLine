@@ -1,6 +1,5 @@
 ﻿using SandlotWizards.ActionLogger;
 using SandlotWizards.CommandLineParser.Core;
-using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
@@ -8,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace SandlotWizards.CommandLineParser.BuiltIn;
 
+[ExcludeFromCommandDiscovery]
 public class ShellForwardCommand : IRoutableCommand
 {
     private readonly string _exe;
