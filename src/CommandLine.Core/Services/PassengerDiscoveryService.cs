@@ -56,6 +56,8 @@ public class PassengerDiscoveryService
             }
         };
 
+        process.StartInfo.EnvironmentVariables["IS_PASSENGER"] = "1";
+
         process.Start();
         var output = await process.StandardOutput.ReadToEndAsync();
         await process.WaitForExitAsync();
@@ -88,6 +90,8 @@ public class PassengerDiscoveryService
                 CreateNoWindow = true
             }
         };
+
+        process.StartInfo.EnvironmentVariables["IS_PASSENGER"] = "1";
 
         try
         {

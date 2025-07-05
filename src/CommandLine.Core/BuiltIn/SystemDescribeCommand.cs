@@ -30,7 +30,7 @@ public class SystemDescribeCommand : IRoutableCommand
     public Task<CommandResult?> ExecuteAsync(CommandContext context)
     {
         var entries = _commands
-            .Where(c => c.IsEnabled && !(c.Noun == "system" && c.Verb == "describe") && !(c.Noun == "system" && c.Verb == "list"))
+            .Where(c => c.IsEnabled && !(c.Noun == "system" && c.Verb == "describe") && !(c.Noun == "system" && c.Verb == "list") && !(c.Noun == "core" && c.Verb == "version"))
             .Select(c => new
             {
                 noun = c.Noun,
