@@ -10,6 +10,7 @@ using SandlotWizards.CommandLineParser.Services;
 using Serilog;
 using System.Reflection;
 
+Environment.SetEnvironmentVariable("IS_PASSENGER", "0");
 var isPassenger = Environment.GetEnvironmentVariable("IS_PASSENGER") == "1";
 
 var builder = Host.CreateDefaultBuilder(args)

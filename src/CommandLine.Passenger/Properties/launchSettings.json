@@ -2,10 +2,7 @@
   "profiles": {
     "CommandLine.Passenger": {
       "commandName": "Project",
-      "commandLineArgs": "system describe --output json",
-      "environmentVariables": {
-        "IS_PASSENGER": "1"
-      }
+      "commandLineArgs": "system describe --output json"
     }
   }
 }

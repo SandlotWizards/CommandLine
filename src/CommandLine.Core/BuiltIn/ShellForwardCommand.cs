@@ -56,8 +56,6 @@ public class ShellForwardCommand : IRoutableCommand
             }
         };
 
-        process.StartInfo.Environment["IS_PASSENGER"] = "1";
-
         process.Start();
         var output = await process.StandardOutput.ReadToEndAsync();
         await process.WaitForExitAsync();

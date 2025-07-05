@@ -14,7 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-
+Environment.SetEnvironmentVariable("IS_PASSENGER", "1");
 var isPassenger = Environment.GetEnvironmentVariable("IS_PASSENGER") == "1";
 
 var builder = Host.CreateDefaultBuilder(args)
