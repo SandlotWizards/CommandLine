@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Reflection;
+using System.Threading.Tasks;
 using SandlotWizards.ActionLogger;
 using SandlotWizards.CommandLineParser.Core;
 
@@ -15,7 +16,9 @@ public class VersionCommand : IRoutableCommand
 
     public Task<CommandResult?> ExecuteAsync(CommandContext context)
     {
-        var versionText = "Lore CLI version 1.0.0";
+        var toolName = Assembly.GetEntryAssembly()?.GetName().Name ?? "Unknown CLI";
+        var version = Assembly.GetEntryAssembly()?.GetName().Version?.ToString() ?? "unknown";
+        var versionText = $"{toolName} version {version}";
         var outputMode = context.Metadata["OutputFormat"]?.ToString();
 
         if (outputMode == "text")

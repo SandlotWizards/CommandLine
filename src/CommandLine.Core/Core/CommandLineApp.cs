@@ -1,5 +1,3 @@
-using SandlotWizards.ActionLogger;
-using SandlotWizards.ActionLogger.Services;
 using SandlotWizards.CommandLineParser.BuiltIn;
 using SandlotWizards.CommandLineParser.Help;
 using SandlotWizards.CommandLineParser.Output;
@@ -15,14 +13,8 @@ public static class CommandLineApp
 
     public static async Task Run(string[] args, Action<CommandRegistry> configure, IServiceProvider serviceProvider)
     {
-        if (!ActionLog.IsInitialized)
-        {
-            var defaultLogger = new ActionLoggerService();
-            ActionLog.Initialize(defaultLogger);
-        }
-
         var registry = new CommandRegistry();
-        
+
         configure(registry);
 
         var parser = new ContextParser();

@@ -52,12 +52,13 @@ public class SystemListCommand : IRoutableCommand
         }
         else
         {
+            ActionLog.Global.Message("Available Commands:", System.ConsoleColor.Green);
             foreach (var group in visibleCommands)
             {
-                ActionLog.Global.Message(group.Key);
+                ActionLog.Global.Message($"  {group.Key}");
                 foreach (var cmd in group.OrderBy(c => c.Noun).ThenBy(c => c.Verb))
                 {
-                    var label = $"  {cmd.Noun} {cmd.Verb}".PadRight(30);
+                    var label = $"    {cmd.Noun} {cmd.Verb}".PadRight(30);
                     var description = string.IsNullOrWhiteSpace(cmd.Description) ? "No description provided." : cmd.Description;
                     ActionLog.Global.Message($"{label} {description}");
                 }

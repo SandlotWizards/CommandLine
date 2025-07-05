@@ -2,16 +2,28 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using SandlotWizards.ActionLogger;
+using SandlotWizards.ActionLogger.Services;
 using SandlotWizards.CommandLineParser.BuiltIn;
 using SandlotWizards.CommandLineParser.Core;
 using SandlotWizards.CommandLineParser.Helper;
 using SandlotWizards.CommandLineParser.Models;
 using SandlotWizards.CommandLineParser.Services;
 using Serilog;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 
 Environment.SetEnvironmentVariable("IS_PASSENGER", "0");
 var isPassenger = Environment.GetEnvironmentVariable("IS_PASSENGER") == "1";
+
+if (!ActionLog.IsInitialized)
+{
+    var defaultLogger = new ActionLoggerService();
+    ActionLog.Initialize(defaultLogger);
+}
 
 var builder = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((hostingContext, config) =>
@@ -44,9 +56,6 @@ var builder = Host.CreateDefaultBuilder(args)
 
 var app = builder.Build();
 
-var logger = app.Services.GetRequiredService<ILogger<Program>>();
-logger.LogInformation("Starting SandlotWizard Lore Copilot...");
-
 List<PassengerManifest> passengers = new();
 
 if (!isPassenger)
@@ -54,7 +63,6 @@ if (!isPassenger)
     // 🚀 Discover passenger plugins
     var discovery = app.Services.GetRequiredService<PassengerDiscoveryService>();
     passengers = await discovery.DiscoverAsync();
-    logger.LogInformation("Discovered {Count} passenger(s)", passengers.Count);
 }
 
 await CommandLineApp.Run(args, registry =>

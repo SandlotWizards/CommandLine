@@ -1,16 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <OutputType>Exe</OutputType>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>lore</ToolCommandName>
+    <Version>1.0.0</Version>
+    <Authors>Sandlot Wizards</Authors>
+    <Company>Sandlot Wizards</Company>
+    <RootNamespace>SandlotWizards.Copilot</RootNamespace>
+    <PackageId>SandlotWizards.Copilot</PackageId>
+    <Description>
+      Lore Copilot CLI — an extensible, modular command-line orchestrator designed to forward, invoke, and coordinate local and remote command packages (passengers) through a unified interface.
+    </Description>
+    <PackageTags>
+      lore;copilot;cli;command-router;plugin;dotnet;extensible;modular;dispatcher;sandlot;ai
+    </PackageTags>
+    <RepositoryUrl>git@github.com:SandlotWizards/CommandLine.git</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="NuGet.Protocol" Version="6.8.0" />
-    <PackageReference Include="NuGet.Configuration" Version="6.8.0" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CommandLine.Core\CommandLine.Core.csproj" />
