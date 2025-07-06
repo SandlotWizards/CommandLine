@@ -6,6 +6,7 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>lore-harness</ToolCommandName>
     <Version>1.9.0</Version>
+    <AssemblyVersion>1.9.0</AssemblyVersion>
     <Authors>Sandlot Wizards</Authors>
     <Company>Sandlot Wizards</Company>
     <RootNamespace>SandlotWizards.Harness</RootNamespace>
