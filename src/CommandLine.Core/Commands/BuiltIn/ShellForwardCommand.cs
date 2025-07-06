@@ -98,14 +98,14 @@ public class ShellForwardCommand : IRoutableCommand
             }
         });
 
-        using var stdout = process.StandardOutput;
-        string? stdLine;
         string raw = string.Empty;
-        while ((stdLine = await stdout.ReadLineAsync()) != null)
+        using var stdout = process.StandardOutput;
+        int ch;
+        while ((ch = stdout.Read()) != -1)
         {
-            raw += stdLine + "\n";
-            if (!outputAsJson)
-                ActionLog.Global.Message(stdLine);
+            char character = (char)ch;
+            raw += character;
+            Console.Write(character);
         }
 
         await process.WaitForExitAsync();
