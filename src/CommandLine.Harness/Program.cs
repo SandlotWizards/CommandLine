@@ -1,22 +1,23 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using SandlotWizards.ActionLogger;
 using SandlotWizards.ActionLogger.Services;
 using SandlotWizards.CommandLineParser.Commands.BuiltIn;
 using SandlotWizards.CommandLineParser.Execution;
 using SandlotWizards.CommandLineParser.Helper;
+using SandlotWizards.CommandLineParser.IO.Input;
 using SandlotWizards.CommandLineParser.Models;
 using SandlotWizards.CommandLineParser.Services;
 using Serilog;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 
+Environment.SetEnvironmentVariable("TOOL_NAME", "lore-harness");
 Environment.SetEnvironmentVariable("IS_PASSENGER", "0");
+
 var isPassenger = Environment.GetEnvironmentVariable("IS_PASSENGER") == "1";
 
 if (!ActionLog.IsInitialized)
@@ -46,6 +47,7 @@ var builder = Host.CreateDefaultBuilder(args)
         }
 
         services.AddSingleton<VersionCommand>();
+        services.AddScoped<IInteractivePromptService, ConsolePromptService>();
         if (isPassenger) services.AddSingleton<SystemDescribeCommand>();
         if (!isPassenger) services.AddSingleton<PassengerDiscoveryService>();
     })
@@ -101,15 +103,13 @@ await CommandLineApp.Run(args, registry =>
 
     if (isPassenger)
     {
-        var toolName = Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly()?.Location ?? "unknown");
+        var toolName = Environment.GetEnvironmentVariable("TOOL_NAME") ?? "unknown";
         var systemDescribe = new SystemDescribeCommand(toolName, fullCommandList);
         registry.Register(new RoutableCommandDescriptor(systemDescribe));
     }
 
-    if (!isPassenger)
-    {
-        var systemList = new SystemListCommand(fullCommandList);
-        fullCommandList.Add(new RoutableCommandDescriptor(systemList));
-        registry.Register(new RoutableCommandDescriptor(systemList));
-    }
+    var systemList = new SystemListCommand(fullCommandList);
+    fullCommandList.Add(new RoutableCommandDescriptor(systemList));
+    registry.Register(new RoutableCommandDescriptor(systemList));
+
 }, app.Services);

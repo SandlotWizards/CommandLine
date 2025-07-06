@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SandlotWizards.Passenger.Commands;
 
-public sealed class AddConnectionProfileCommand : IRoutableCommand
+public sealed class ConnectionProfileAddCommand : IRoutableCommand
 {
     public string Noun => "connection-profile";
     public string Verb => "add";

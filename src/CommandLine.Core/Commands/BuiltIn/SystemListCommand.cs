@@ -1,5 +1,6 @@
 ﻿using SandlotWizards.ActionLogger;
 using SandlotWizards.CommandLineParser.Execution;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -52,7 +53,8 @@ public class SystemListCommand : IRoutableCommand
         }
         else
         {
-            var titleText = "Available Commands";
+            var toolName = Environment.GetEnvironmentVariable("TOOL_NAME") ?? "CommandLineTool";
+            var titleText = $"Available Commands ({toolName}):";
             var displayText = context.IsDryRun ? $"[dry-run] {titleText}" : titleText;
             ActionLog.Global.Message(displayText, System.ConsoleColor.Green);
             foreach (var group in visibleCommands)

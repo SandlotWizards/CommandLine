@@ -1,3 +1,4 @@
+using SandlotWizards.ActionLogger;
 using SandlotWizards.CommandLineParser.Commands.BuiltIn;
 using SandlotWizards.CommandLineParser.Core;
 using SandlotWizards.CommandLineParser.Help;
@@ -14,6 +15,7 @@ public static class CommandLineApp
 
     public static async Task Run(string[] args, Action<CommandRegistry> configure, IServiceProvider serviceProvider)
     {
+
         var registry = new CommandRegistry();
 
         configure(registry);
@@ -62,7 +64,7 @@ public static class CommandLineApp
 
             if (!isChildProcess) outputWriter.WriteSplash(SplashRenderer.Render(context));
 
-            if (!isChildProcess) outputWriter.WriteHeader();
+            if (!isChildProcess) outputWriter.WriteHeader(); 
 
             var result = await command.ExecuteAsync(context);
 

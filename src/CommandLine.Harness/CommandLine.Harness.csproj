@@ -4,8 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <PackAsTool>true</PackAsTool>
-    <ToolCommandName>harness</ToolCommandName>
-    <Version>1.1.0</Version>
+    <ToolCommandName>lore-harness</ToolCommandName>
+    <Version>1.8.0</Version>
     <Authors>Sandlot Wizards</Authors>
     <Company>Sandlot Wizards</Company>
     <RootNamespace>SandlotWizards.Harness</RootNamespace>

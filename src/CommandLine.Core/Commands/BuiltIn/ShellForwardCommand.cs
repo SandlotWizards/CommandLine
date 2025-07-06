@@ -1,5 +1,6 @@
 ﻿using SandlotWizards.ActionLogger;
 using SandlotWizards.CommandLineParser.Execution;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
@@ -45,18 +46,17 @@ public class ShellForwardCommand : IRoutableCommand
 
     public async Task<CommandResult?> ExecuteAsync(CommandContext context)
     {
-        var baseArgs = new[] { _noun, _verb };
-        var allArgs = baseArgs
+        var allArgs = new[] { _noun, _verb }
             .Concat(context.PositionalArgs)
             .Concat(context.ForwardableArgs)
-            .ToArray();
+            .ToList();
 
-        var outputAsJson = context.Arguments.TryGetValue("output", out var format)
-            && format?.ToLowerInvariant() == "json";
+        var outputAsJson = context.Arguments.TryGetValue("output", out var format) &&
+                           format?.ToLowerInvariant() == "json";
 
         if (outputAsJson)
         {
-            allArgs = allArgs.Concat(new[] { "--output", "json" }).ToArray();
+            allArgs.AddRange(new[] { "--output", "json" });
         }
 
         var process = new Process
@@ -66,20 +66,55 @@ public class ShellForwardCommand : IRoutableCommand
                 FileName = _exe,
                 Arguments = string.Join(' ', allArgs),
                 RedirectStandardOutput = true,
+                RedirectStandardInput = true,
+                RedirectStandardError = true,
                 UseShellExecute = false,
-                CreateNoWindow = true
+                CreateNoWindow = false
             }
         };
 
         process.Start();
-        var output = await process.StandardOutput.ReadToEndAsync();
+
+        _ = Task.Run(async () =>
+        {
+            using var reader = Console.In;
+            using var writer = process.StandardInput;
+            while (!process.HasExited && reader is not null)
+            {
+                var line = await reader.ReadLineAsync();
+                if (line is null) break;
+                await writer.WriteLineAsync(line);
+                await writer.FlushAsync();
+            }
+        });
+
+        _ = Task.Run(async () =>
+        {
+            using var stderr = process.StandardError;
+            string? errLine;
+            while ((errLine = await stderr.ReadLineAsync()) != null)
+            {
+                ActionLog.Global.Warning("[stderr] " + errLine);
+            }
+        });
+
+        using var stdout = process.StandardOutput;
+        string? stdLine;
+        string raw = string.Empty;
+        while ((stdLine = await stdout.ReadLineAsync()) != null)
+        {
+            raw += stdLine + "\n";
+            if (!outputAsJson)
+                ActionLog.Global.Message(stdLine);
+        }
+
         await process.WaitForExitAsync();
 
         if (outputAsJson)
         {
             try
             {
-                return JsonSerializer.Deserialize<CommandResult>(output, new JsonSerializerOptions
+                return JsonSerializer.Deserialize<CommandResult>(raw, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
@@ -90,17 +125,16 @@ public class ShellForwardCommand : IRoutableCommand
                 {
                     Status = "error",
                     Messages = new[] { "Failed to parse JSON output from plugin." },
-                    Data = new { Raw = output }
+                    Data = new { Raw = raw }
                 };
             }
         }
 
-        ActionLog.Global.Message(output);
         return new CommandResult
         {
             Status = "success",
             Messages = new[] { "Command executed successfully." },
-            Data = new { Raw = output }
+            Data = new { Raw = raw }
         };
     }
 }

@@ -18,7 +18,7 @@ public static class SplashRenderer
 ";
         var splashOut = new StringBuilder()
             .AppendLine(banner)
-            .AppendLine("Speak plainly. Code boldly.")
+            .AppendLine("The shell you know. The AI you’ve needed.")
             .ToString();
         return splashOut;
     }

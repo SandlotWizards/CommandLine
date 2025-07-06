@@ -2,7 +2,7 @@
   "profiles": {
     "CommandLine.Passenger": {
       "commandName": "Project",
-      "commandLineArgs": "system describe --output json"
+      "commandLineArgs": "connection-profile add"
     }
   }
 }
